@@ -1,4 +1,3 @@
-
 # MongoDB Collections for Dynamic CMS
 
 ## Collections
@@ -22,6 +21,13 @@
 - `email`: Email of the user
 - `password_hash`: Hashed password for security
 - `role`: Role of the user (e.g., admin, editor, viewer)
+- `settings`: Object containing user-specific settings
+
+### 4. Settings Collection
+- `_id`: Identifier for each setting group ("system" for system-wide settings)
+- `general`: Object containing general settings like site name, description, etc.
+- `api`: Object containing API-related settings
+- `modules`: Object containing active module names
 
 ## ASCII Representation
 
@@ -35,8 +41,12 @@ Contents Collection
 | _id | type_id |           data           | author_id | created_at | updated_at |
 
 Users Collection
--------------------------------
-| _id | username | email | password_hash | role |
+--------------------------------------------------------
+| _id | username | email | password_hash | role | settings |
+
+Settings Collection
+-----------------------------------------
+| _id | general | api | modules |
 ```
 
 ## Example Document for ContentTypes
@@ -69,3 +79,48 @@ Users Collection
   "updated_at": "timestamp"
 }
 ```
+
+## Example Document for Users
+
+```json
+{
+  "_id": "user_id",
+  "username": "JohnDoe",
+  "email": "john@example.com",
+  "password_hash": "hashed_password",
+  "role": "admin",
+  "settings": {
+    "dashboard": {
+      "widgetLayout": ["widget1", "widget2"]
+    },
+    "notifications": {
+      "email": true,
+      "push": false
+    },
+    "account": {
+      "language": "en-US",
+      "privacy": "public"
+    }
+  }
+}
+```
+
+## Example Document for Settings
+
+```json
+{
+  "_id": "system",
+  "general": {
+    "siteName": "My Awesome CMS",
+    "siteDescription": "This is an awesome CMS",
+    "maintenanceMode": false,
+    "timezone": "UTC"
+  },
+  "api": {
+    "rateLimit": 1000,
+    "accessRestrictions": []
+  },
+  "modules": {
+    "activeModules": ["Blog", "Forum"]
+  }
+}

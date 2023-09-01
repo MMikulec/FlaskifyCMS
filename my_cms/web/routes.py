@@ -11,9 +11,11 @@ from flask import Blueprint, render_template
 
 web = Blueprint('web', __name__)
 
+
 @web.route('/', methods=['GET'])
 def index():
     return "OK"
+
 
 @web.route('/posts', methods=['GET'])
 def posts():

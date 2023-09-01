@@ -1,3 +1,6 @@
+import pkgutil
+import importlib
+
 from flask import Flask
 from flask_pymongo import PyMongo
 from config import Config
@@ -6,7 +9,6 @@ from .db_init import initialize_db
 # Import the blueprints here to avoid circular imports
 from my_cms.web.routes import web as web_blueprint
 from my_cms.api.routes import api as api_blueprint
-from my_cms.main.routes import main as main_blueprint
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -24,9 +26,29 @@ def is_db_empty():
 @app.before_request
 def before_first_request():
     if is_db_empty():
+        print("Initialize database")
         initialize_db(mongo)
 
 
+# Dynamically import all modules in the 'modules' package
+def load_modules(my_app):
+    # Fetch active modules from MongoDB Settings collection
+    settings = mongo.db.Settings.find_one({"_id": "system"})
+    active_modules = settings.get('modules', {}).get('activeModules', []) if settings else []
+
+    print(f"Active Modules from DB: {active_modules}")
+
+    # Dynamically load modules
+    for _, module_name, _ in pkgutil.iter_modules(['modules']):
+        print(f"Checking module: {module_name}")
+        if module_name in active_modules and module_name not in my_app.blueprints:
+            module = importlib.import_module(f'modules.{module_name}')
+            if hasattr(module, 'bp'):
+                print(f"Loading module: {module_name}")
+                my_app.register_blueprint(module.bp)
+
+
+load_modules(app)
 app.register_blueprint(web_blueprint)
 app.register_blueprint(api_blueprint)
-app.register_blueprint(main_blueprint)
+print(f"Running modules: {app.blueprints}")

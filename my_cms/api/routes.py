@@ -8,7 +8,8 @@ Endpoints:
 - POST /api/posts: Create a new post from JSON payload.
 """
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, Response
+import my_cms.core as core
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
