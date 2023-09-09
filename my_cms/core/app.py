@@ -4,11 +4,17 @@ import importlib
 from flask import Flask
 from flask_pymongo import PyMongo
 from config import Config
+from flask_security import Security
 from .db_init import initialize_db
 
 # Import the blueprints here to avoid circular imports
-from my_cms.web.routes import web as web_blueprint
-from my_cms.api.routes import api as api_blueprint
+from my_cms.web import web as web_blueprint
+from my_cms.api import api as api_blueprint
+
+# Initialize Flask-Security
+from .user_datastore import PyMongoUserDatastore
+from .user_datastore import User
+from .user_datastore import Role
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,6 +22,10 @@ app.config.from_object(Config)
 # Combine URI and DB_NAME
 app.config["MONGO_URI"] = f"{Config.MONGO_URI}{Config.MONGO_DB_NAME}?authSource=admin"
 mongo = PyMongo(app)
+
+
+user_datastore = PyMongoUserDatastore(mongo.db, User, Role)
+security = Security(app, user_datastore)
 
 
 # Function to check if the database is empty
@@ -52,3 +62,4 @@ load_modules(app)
 app.register_blueprint(web_blueprint)
 app.register_blueprint(api_blueprint)
 print(f"Running modules: {app.blueprints}")
+print(app.url_map)

@@ -19,3 +19,18 @@ class ContentService:
         if not isinstance(db, PyMongo):
             raise TypeError("db must be an instance of PyMongo")
         self.db = db
+
+
+# Reference dictionaries for User and Role schemas
+User = {
+    "username": "string",
+    "email": "string",
+    "password_hash": "string",
+    "role": "string",
+    "settings": {}
+}
+
+Role = {
+    "name": "string",
+    "description": "string"
+}
