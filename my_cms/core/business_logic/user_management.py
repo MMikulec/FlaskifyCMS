@@ -23,3 +23,9 @@ def do_handle_logout_user():
 
 def do_create_user(**kwargs):
     return user_datastore.create_user(**kwargs)
+
+
+def get_all_users():
+    users = user_datastore.get_all_users()
+    # Apply business logic here if needed
+    return users

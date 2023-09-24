@@ -5,4 +5,5 @@ from .app import mongo
 from .app import security
 from .business_logic import (do_login_user,
                              do_handle_logout_user,
-                             do_create_user)
+                             do_create_user,
+                             get_all_users)

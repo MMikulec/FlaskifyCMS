@@ -107,3 +107,7 @@ class PyMongoUserDatastore(UserDatastore):
 
     def commit(self):
         pass  # PyMongo writes are committed automatically
+
+    def get_all_users(self):
+        users = self.db.Users.find()
+        return [User(user_data) for user_data in users]

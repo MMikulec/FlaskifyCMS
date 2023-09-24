@@ -60,3 +60,9 @@ def info():
         return f"Hello, {current_user.email} {current_user.password}"
     else:
         return "You are not logged in."
+
+
+@web.route('/users', methods=['GET'])
+def web_get_all_users():
+    users = core.get_all_users()
+    return render_template('users.jinja2', users=users)

@@ -70,3 +70,23 @@ def api_info():
     }
 
     return jsonify({"message": "User Info", "user_info": user_info})
+
+
+@api.route('/users', methods=['GET'])
+def api_get_all_users():
+    users = core.get_all_users()  # or core.user_datastore.get_all_users() based on where you put it
+    user_list = []
+
+    # Loop through the list of User objects
+    for user in users:
+        user_dict = {
+            "User ID": user.id,
+            "Email": user.email,
+            "Password": user.password,
+            "Is Active": user.active
+            # Add any other attributes you have
+        }
+        user_list.append(user_dict)
+
+    # Convert to JSON
+    return jsonify(user_list)
